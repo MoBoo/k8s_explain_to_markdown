@@ -134,7 +134,7 @@ def merge_descriptions(fields: list):
     return new_fields_list
 
 
-def to_markdown(root_obj: Field, template_name: str, template_dir: str, output: str):
+def render_doc(root_obj: Field, template_name: str, template_dir: str, output: str):
     """
     Renders the field tree-structure from 'parse_output' into a markdown file using jinj2 as a render-engine.
 
@@ -146,7 +146,7 @@ def to_markdown(root_obj: Field, template_name: str, template_dir: str, output: 
     logging.debug(f"rendering to markdown")
     jinja_env = Jinja_Environment(loader=Jinja_FSLoader(template_dir), autoescape=select_autoescape())
     template = jinja_env.get_template(template_name)
-    template.stream(resource=root_obj).dump(f"{output}.{template_name.split('.')[1]}")
+    template.stream(resource=root_obj).dump(f"{output}.{template_name.split('.')[-1]}")
 
 
 if __name__ == '__main__':
@@ -167,4 +167,4 @@ if __name__ == '__main__':
     cmd.append(args.resource)
 
     rv = parse_output(get_output(cmd), parent=Field(args.resource, None, None))
-    to_markdown(rv, args.template_name, args.template_dir, args.output if args.output else args.resource)
+    render_doc(rv, args.template_name, args.template_dir, args.output if args.output else args.resource)
